@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+g {
+  @apply hover:brightness-90 transition-all cursor-pointer origin-center;
+}
