@@ -7,13 +7,16 @@ module.exports = {
   ],
   theme: {
     extend: {
-      color: {
+      colors: {
         primary: '#515153',
         blue: '#7CDFEA',
         green: '#7CEA8D',
         yellow: '#E8EA7C',
         red: '#EA7C96',
         orange: '#EAB17C',
+      },
+      fontSize: {
+        clamp1: 'clamp(1rem, 5vw, 3rem)',
       },
     },
   },

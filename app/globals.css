@@ -5,3 +5,13 @@
 g {
   @apply hover:brightness-90 transition-all cursor-pointer origin-center;
 }
+
+.af {
+  position: relative;
+}
+
+.af:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
