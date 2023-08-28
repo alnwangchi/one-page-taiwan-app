@@ -6,7 +6,7 @@ import iRead from '../assets/iRead.png';
 import HyRead from '../assets/HyRead.png';
 import twBook from '../assets/twBook.png';
 
-import { useState, Fragment, useEffect, useRef } from 'react';
+import { useState, Fragment, useEffect, useRef, useLayoutEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 
 const libraryData = [
@@ -216,21 +216,7 @@ export default function Home() {
 
   const ref = useRef(null);
 
-  useEffect(() => {
-    const blocks = document.querySelectorAll('g');
-
-    blocks.forEach((b) => {
-      b.addEventListener('click', function () {
-        blocks.forEach((b) => b.classList.remove('brightness-50'));
-        this.classList.add('brightness-50');
-        const correspondingData = libraryData.find((b) => b.location === this.getAttribute('id'));
-        setData(correspondingData);
-        openModal();
-      });
-    });
-  }, []);
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (window.innerWidth < 475) return;
     const blocks = document.querySelectorAll('g');
     const twBlock = document.querySelector('#tw-block');
@@ -240,13 +226,52 @@ export default function Home() {
 
       const nameDiv = document.createElement('div');
       nameDiv.textContent = name;
-      nameDiv.classList.add('absolute', 'whitespace-nowrap', 'text-xs');
+      nameDiv.setAttribute('data-group', 'text');
+      nameDiv.classList.add('absolute', 'whitespace-nowrap', 'text-xs', 'pointer-events-none');
       nameDiv.style.top = correspondingData.top;
       nameDiv.style.left = correspondingData.left;
 
       twBlock.appendChild(nameDiv);
 
       b.setAttribute('data-name', name);
+    });
+  }, []);
+
+  useEffect(() => {
+    const blocks = document.querySelectorAll('g');
+    const allTextEl = [...document.querySelectorAll('div[data-group="text"]')];
+
+    blocks.forEach((b) => {
+      b.addEventListener('click', function () {
+        blocks.forEach((b) => b.classList.remove('brightness-50'));
+        this.classList.add('brightness-50');
+        const correspondingData = libraryData.find((b) => b.location === this.getAttribute('id'));
+
+        const correspondingTextEl = allTextEl.find(
+          (el) => el.textContent === this.getAttribute('data-name'),
+        );
+
+        allTextEl.forEach((el) =>
+          el.classList.remove(
+            '!text-xl',
+            'text-white',
+            'bg-slate-400/[.9]',
+            'rounded-md',
+            'z-10',
+            'p-2',
+          ),
+        );
+        correspondingTextEl?.classList.add(
+          '!text-xl',
+          'text-white',
+          'bg-slate-400/[.9]',
+          'rounded-md',
+          'z-10',
+          'p-2',
+        );
+        setData(correspondingData);
+        openModal();
+      });
     });
   }, []);
 
@@ -262,7 +287,7 @@ export default function Home() {
     <main className='relative'>
       <Image src={bg} alt='bg' className='object-cover h-screen w-screen object-left-top' />
       <section className='absolute top-0 left-0 h-screen w-screen flex flex-col sm:flex-row p-10 xl:p-20'>
-        <div className='w-full sm:w-1/2 h-full flex justify-center items-center order-1 relative text-primary font-black grow-1'>
+        <div className='w-fit sm:w-1/2 h-full flex justify-center items-center order-1 relative text-primary font-black grow-1'>
           <div className='absolute bottom-0 left-0 hidden sm:grid grid-cols-2 z-10 gap-2 place-items-center'>
             <div className='rounded-full w-9 h-9 bg-blue'></div>
             <div className=''>北部</div>
@@ -277,7 +302,7 @@ export default function Home() {
           </div>
           <div id='tw-block' className='relative h-full w-fit'>
             <svg
-              className='min-w-300px h-full'
+              className='min-w-300px h-[88%] sm:h-full'
               viewBox='0 0 595 998'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
@@ -503,12 +528,12 @@ export default function Home() {
           <h1 className='text-white text-clamp1 font-black bg-[linear-gradient(90deg,#34a28d,#0578b6)] p-5 rounded-2xl w-fit'>
             拓展閱讀無界 計次借閱無限
           </h1>
-          <h2 className='text-primary text-xl sm:text-2xl text-center font-black sm:pl-5'>
+          <h2 className='hidden sm:block text-primary text-xl sm:text-2xl text-center font-black sm:pl-5'>
             EXPAND BOUNDLESS READING,
             <br />
             INFINITE BORROWING
           </h2>
-          <Image src={deco} alt='bg' className='w-[25vw] max-w-[450px] mt-auto hidden sm:block' />
+          <Image src={deco} alt='bg' className='w-[20vw] max-w-[400px] mt-auto hidden sm:block' />
         </div>
       </section>
       <Transition appear show={isOpen} as={Fragment}>

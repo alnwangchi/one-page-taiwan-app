@@ -16,7 +16,7 @@ module.exports = {
         orange: '#EAB17C',
       },
       fontSize: {
-        clamp1: 'clamp(1rem, 5vw, 3rem)',
+        clamp1: 'clamp(1rem, 5vw, 2.5rem)',
       },
     },
   },
