@@ -6,7 +6,7 @@ import iRead from '../assets/iRead.png';
 import HyRead from '../assets/HyRead.png';
 import twBook from '../assets/twBook.png';
 
-import { useState, Fragment, useEffect } from 'react';
+import { useState, Fragment, useEffect, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 
 const libraryData = [
@@ -214,13 +214,15 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState(libraryData[0]);
 
+  const ref = useRef(null);
+
   useEffect(() => {
     const blocks = document.querySelectorAll('g');
 
     blocks.forEach((b) => {
       b.addEventListener('click', function () {
-        blocks.forEach((b) => b.classList.remove('brightness-75'));
-        this.classList.add('brightness-75');
+        blocks.forEach((b) => b.classList.remove('brightness-50'));
+        this.classList.add('brightness-50');
         const correspondingData = libraryData.find((b) => b.location === this.getAttribute('id'));
         setData(correspondingData);
         openModal();
@@ -510,7 +512,7 @@ export default function Home() {
         </div>
       </section>
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as='div' className='relative z-10' onClose={closeModal}>
+        <Dialog initialFocus={ref} as='div' className='relative z-10' onClose={closeModal}>
           <div className='fixed inset-0 overflow-y-auto sm:left-[40%] sm:top-[5%]'>
             <div className='flex min-h-full items-center justify-center p-4 text-center'>
               <Transition.Child
@@ -523,7 +525,11 @@ export default function Home() {
                 leaveTo='opacity-0 scale-95'
               >
                 <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-10 text-left align-middle shadow-xl transition-all'>
-                  <Dialog.Title as='h3' className='text-lg font-black leading-6 text-primary'>
+                  <Dialog.Title
+                    ref={ref}
+                    as='h3'
+                    className='text-lg font-black leading-6 text-primary'
+                  >
                     {data?.name}
                   </Dialog.Title>
                   <div className='mt-2'>
