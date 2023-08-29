@@ -216,6 +216,7 @@ export default function Home() {
 
   const ref = useRef(null);
 
+  // 用 useLayoutEffect 本是為了想嘗試讓這邊執行優先於一般 useEffect 但好像沒差 只要放前面就可以
   useLayoutEffect(() => {
     if (window.innerWidth < 475) return;
     const blocks = document.querySelectorAll('g');
@@ -227,7 +228,7 @@ export default function Home() {
       const nameDiv = document.createElement('div');
       nameDiv.textContent = name;
       nameDiv.setAttribute('data-group', 'text');
-      nameDiv.classList.add('absolute', 'whitespace-nowrap', 'text-xs', 'pointer-events-none');
+      nameDiv.classList.add('absolute', 'whitespace-nowrap', 'text-xs');
       nameDiv.style.top = correspondingData.top;
       nameDiv.style.left = correspondingData.left;
 
@@ -240,7 +241,38 @@ export default function Home() {
   useEffect(() => {
     const blocks = document.querySelectorAll('g');
     const allTextEl = [...document.querySelectorAll('div[data-group="text"]')];
+    // 點擊事件綁定及樣式變化
 
+    // 針對文字
+    allTextEl.forEach((tEl) => {
+      tEl.addEventListener('click', function () {
+        console.log(this.innerText);
+        const correspondingData = libraryData.find((b) => b.name === this.innerText);
+        allTextEl.forEach((el) =>
+          el.classList.remove(
+            '!text-xl',
+            'text-white',
+            'bg-slate-400/[.9]',
+            'rounded-md',
+            'z-10',
+            'p-2',
+          ),
+        );
+
+        this.classList.add(
+          '!text-xl',
+          'text-white',
+          'bg-slate-400/[.9]',
+          'rounded-md',
+          'z-10',
+          'p-2',
+        );
+
+        setData(correspondingData);
+        openModal();
+      });
+    });
+    // 針對地區圖案
     blocks.forEach((b) => {
       b.addEventListener('click', function () {
         blocks.forEach((b) => b.classList.remove('brightness-50'));
