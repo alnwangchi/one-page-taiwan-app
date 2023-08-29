@@ -239,15 +239,18 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const blocks = document.querySelectorAll('g');
+    const blocks = [...document.querySelectorAll('g')];
     const allTextEl = [...document.querySelectorAll('div[data-group="text"]')];
     // 點擊事件綁定及樣式變化
 
     // 針對文字
     allTextEl.forEach((tEl) => {
       tEl.addEventListener('click', function () {
-        console.log(this.innerText);
-        const correspondingData = libraryData.find((b) => b.name === this.innerText);
+        const conrrespondingLocation = blocks.find(
+          (b) => b.getAttribute('data-name') === tEl.innerText,
+        );
+        blocks.forEach((b) => b.classList.remove('brightness-50'));
+        conrrespondingLocation.classList.add('brightness-50');
         allTextEl.forEach((el) =>
           el.classList.remove(
             '!text-xl',
@@ -268,6 +271,7 @@ export default function Home() {
           'p-2',
         );
 
+        const correspondingData = libraryData.find((b) => b.name === this.innerText);
         setData(correspondingData);
         openModal();
       });
@@ -277,7 +281,6 @@ export default function Home() {
       b.addEventListener('click', function () {
         blocks.forEach((b) => b.classList.remove('brightness-50'));
         this.classList.add('brightness-50');
-        const correspondingData = libraryData.find((b) => b.location === this.getAttribute('id'));
 
         const correspondingTextEl = allTextEl.find(
           (el) => el.textContent === this.getAttribute('data-name'),
@@ -301,6 +304,7 @@ export default function Home() {
           'z-10',
           'p-2',
         );
+        const correspondingData = libraryData.find((b) => b.location === this.getAttribute('id'));
         setData(correspondingData);
         openModal();
       });
